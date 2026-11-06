@@ -1,0 +1,26 @@
+[project]
+name = "sycophancy-system-one-models"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "TomatenMarc",email = "marc.feger@icloud.com"}
+]
+requires-python = ">=3.15"
+dependencies = [
+    "typesafe-sdk (>=0.7.5,<0.8.0)",
+    "dotenv (>=0.9.9,<0.10.0)",
+    "pandas (>=3.1.1)",
+    "tqdm (>=4.70.1,<5.0.0)",
+    "openai (>=3.46.0,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "ipykernel (>=7.4.0,<8.0.0)",
+    "ipywidgets (>=8.1.9,<9.0.0)"
+]
