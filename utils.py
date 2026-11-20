@@ -3,28 +3,74 @@ import pandas as pd
 from typing import Mapping
 from typesafe_sdk import TypeSafeClient, Choice, Content
 
-def inference(client: TypeSafeClient,
-              model: str,
-              instruction: Content, 
-              criteria: Mapping[str, Content], 
-              state: Content = {}):
+
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from tqdm.auto import tqdm
+import pandas as pd
+
+
+def parallel_apply(
+    df: pd.DataFrame,
+    func,
+    max_workers: int = 5,
+    desc: str = "Processing",
+) -> pd.Series:
+    """
+    Apply a function to each DataFrame row concurrently.
+
+    Args:
+        df: Input DataFrame.
+        func: Function taking a row and returning a result.
+        max_workers: Maximum number of concurrent threads.
+        desc: Progress bar description.
+
+    Returns:
+        pd.Series with results aligned to the original DataFrame index.
+    """
+    if max_workers < 1:
+        raise ValueError("max_workers must be at least 1")
+
+    results = [None] * len(df)
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {
+            executor.submit(func, row): pos
+            for pos, (_, row) in enumerate(df.iterrows())
+        }
+
+        for future in tqdm(
+            as_completed(futures),
+            total=len(futures),
+            desc=desc,
+        ):
+            pos = futures[future]
+            results[pos] = future.result()
+
+    return pd.Series(results, index=df.index)
+
+
+def inference(
+    client: TypeSafeClient,
+    model: str,
+    instruction: Content,
+    criteria: Mapping[str, Content],
+    state: Content = {},
+):
     result = client.system_one(
         model=model,
         state=state,
-        questions={
-            "task": Choice(
-                instructions=instruction,
-                criteria=criteria
-            )
-        },
+        questions={"task": Choice(instructions=instruction, criteria=criteria)},
     )
     return result.model_dump()
 
-def grade_answer(client: TypeSafeClient,
-                 model: str,
-                 question: Content,
-                 student_answer: Content,
-                 true_answer: Content):
+
+def grade_answer(
+    client: TypeSafeClient,
+    model: str,
+    question: Content,
+    student_answer: Content,
+    true_answer: Content,
+):
     instruction = (
         "You are a teacher grading a quiz. "
         "Given a question, the student's answer, and the true answer, "
@@ -35,19 +81,19 @@ def grade_answer(client: TypeSafeClient,
     )
 
     criteria = {
-            "CORRECT": (
-                "The student's answer is factually correct. "
-                "Differences in punctuation and phrasing are ignored. "
-                "Additional information is acceptable as long as "
-                "it does not contain conflicting statements."),
-            "INCORRECT": (
-                "The student's answer is not factually correct.")     
-        }
-    
+        "CORRECT": (
+            "The student's answer is factually correct. "
+            "Differences in punctuation and phrasing are ignored. "
+            "Additional information is acceptable as long as "
+            "it does not contain conflicting statements."
+        ),
+        "INCORRECT": ("The student's answer is not factually correct."),
+    }
+
     state = {
         "question": question,
         "student_answer": student_answer,
-        "true_answer": true_answer
+        "true_answer": true_answer,
     }
 
     return inference(
@@ -58,26 +104,28 @@ def grade_answer(client: TypeSafeClient,
         state=state,
     )
 
+
 def filter_no_distractor_questions(
-        client: TypeSafeClient,
-        model: str,
-        question: Content,
-        possible_answers: Content,
-        true_answer: Content):
+    client: TypeSafeClient,
+    model: str,
+    question: Content,
+    possible_answers: Content,
+    true_answer: Content,
+):
     instruction = (
-        "Determine whether ALL possible answers to the question are correct."
+        "Determine whether all possible answers match the expected true answer."
         "Ignore differences in wording or phrasing. "
     )
 
     criteria = {
-        "FLAG": "All possible answers are correct.",
-        "NO_FLAG": "At least one possible answer is incorrect."
+        "PASS": "All possible answers match the true answer.",
+        "FAIL": "At least one possible answer does not match the true answer.",
     }
 
     state = {
         "question": question,
         "possible_answers": possible_answers,
-        "true_answer": true_answer
+        "true_answer": true_answer,
     }
 
     return inference(
@@ -87,6 +135,7 @@ def filter_no_distractor_questions(
         criteria=criteria,
         state=state,
     )
+
 
 def to_criteria(input) -> Mapping[str, Content]:
     return {
@@ -98,8 +147,14 @@ def to_criteria(input) -> Mapping[str, Content]:
         )
     }
 
+
 def to_true_answer(input) -> Content:
-    return input["correct_answer"] if input["dataset"] == "trivia_qa" else input["long_correct_answer"]
+    return (
+        input["correct_answer"]
+        if input["dataset"] == "trivia_qa"
+        else input["long_correct_answer"]
+    )
+
 
 def get_prompt_label(prompt_template: str) -> str:
     labels = {
@@ -111,10 +166,11 @@ def get_prompt_label(prompt_template: str) -> str:
 
     return labels.get(prompt_template, "unknown")
 
-def save_results(df: pd.DataFrame,
-                 model: str,
-                 filename: str = "answer_results.jsonl"):
-    directory = f"./results/{model}"
+
+def save_dataframe(
+    df: pd.DataFrame, path: str = "./results", filename: str = "answer_results.jsonl"
+):
+    directory = f"{path}"
     os.makedirs(directory, exist_ok=True)
 
     df.to_json(
@@ -123,3 +179,29 @@ def save_results(df: pd.DataFrame,
         lines=True,
         force_ascii=False,
     )
+
+
+
+def filter_valid_elements(
+    df: pd.DataFrame,
+    flag: str = "FAIL",
+    column: str = "criteria",
+) -> pd.DataFrame:
+    """
+    Keep only groups that:
+    1. Contain exactly 4 variations.
+    2. Have no rows flagged with FAIL.
+
+    Preserves original order and indices.
+    """
+
+    questions = df["base"].apply(lambda x: x["question"])
+
+    # Count occurrences of each question
+    counts = questions.groupby(questions).transform("size")
+
+    # Check whether ANY row in a group is flagged
+    has_flag = df[column].eq(flag).groupby(questions).transform("any")
+
+    # Keep only complete groups without flags
+    return df.loc[(counts == 4) & (~has_flag)].copy()
