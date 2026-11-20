@@ -118,8 +118,8 @@ def filter_no_distractor_questions(
     )
 
     criteria = {
-        "PASS": "All possible answers match the true answer.",
-        "FAIL": "At least one possible answer does not match the true answer.",
+        "FAIL": "All possible answers match the true answer.",
+        "PASS": "At least one possible answer does not match the true answer.",
     }
 
     state = {
