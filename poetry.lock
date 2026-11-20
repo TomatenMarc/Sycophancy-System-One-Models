@@ -1386,6 +1386,21 @@ pure-eval = "*"
 tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
+name = "tabulate"
+version = "0.10.0"
+description = "Pretty-print tabular data"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "tabulate-0.10.0-py3-none-any.whl", hash = "sha256:f0b0622e567335c8fabaaa659f1b33bcb6ddfe2e496071b743aa113f8774f2d3"},
+    {file = "tabulate-0.10.0.tar.gz", hash = "sha256:e2cfde8f79420f6deeffdeda9aaec3b6bc5abce947655d17ac662b126e48a60d"},
+]
+
+[package.extras]
+widechars = ["wcwidth"]
+
+[[package]]
 name = "tenacity"
 version = "9.2.1"
 description = "Retry code until it succeeds"
@@ -1624,4 +1639,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.15"
-content-hash = "45d16a83f5e825914ac0392d3750175303cb03cd8d4ad928db41bf9dc1e4c08a"
+content-hash = "53beae00b827c48dd12093c850d33e5227d187c509d7531115ec7f72bb9b62c6"
