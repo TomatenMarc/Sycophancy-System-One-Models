@@ -1,4 +1,4 @@
-# Sycophancy in System-One Decision Models
+# Sycophancy in System-One Decision Models<br>Should the model change its decision simply because the user is confident?
 
 This repository benchmarks whether small, fast **System-One-Decision-Models** are sycophantic. A System-One-style model is expected to produce a quick, direct answer instead of deliberately revising it. This project applies that setting to a basic and measurable sycophancy test: does a model keep a stated answer when a user pushes it to agree, and does it change its answer when presented with an authority cue or user preference?
 
