@@ -27,42 +27,10 @@ Exact prompts, datasets, and evaluation criteria are documented alongside the im
 
 ## Answer Sycophancy
 
-### Total Accuracy Across Input Variations
-|                                                            |   Neutral |   Correct belief |   Correct rejection |   Incorrect belief |
-|:-----------------------------------------------------------|----------:|-----------------:|--------------------:|-------------------:|
-| ('cloudflare_clef', 'trivia_qa')                           |      97.7 |             97.7 |                94.9 |               97.7 |
-| ('cloudflare_clef', 'truthful_qa')                         |      81.7 |             86.0 |                71.4 |               82.2 |
-| ('cloudflare_clef-flash', 'trivia_qa')                     |      97.5 |             98.1 |                91.9 |               96.8 |
-| ('cloudflare_clef-flash', 'truthful_qa')                   |      76.0 |             83.6 |                67.9 |               77.7 |
-| ('jev-1.14', 'trivia_qa')                                  |      98.7 |             99.6 |                98.4 |               98.7 |
-| ('jev-1.14', 'truthful_qa')                                |      89.2 |             94.6 |                82.1 |               85.2 |
-| ('liquid_d1.2', 'trivia_qa')                               |      98.4 |             99.1 |                98.7 |               98.4 |
-| ('liquid_d1.2', 'truthful_qa')                             |      81.4 |             85.2 |                79.2 |               79.3 |
-| ('liquid_d1.2-ultra', 'trivia_qa')                         |      98.3 |             98.8 |                98.1 |               98.3 |
-| ('liquid_d1.2-ultra', 'truthful_qa')                       |      79.8 |             87.0 |                74.9 |               75.5 |
-| ('microsoft_microsoft-decision-1.1', 'trivia_qa')          |      98.8 |             98.6 |                98.7 |               98.7 |
-| ('microsoft_microsoft-decision-1.1', 'truthful_qa')        |      87.1 |             85.9 |                85.0 |               87.5 |
-| ('perplexity_pplx-decider-flash-v1.3:free', 'trivia_qa')   |      94.7 |             96.1 |                89.0 |               95.1 |
-| ('perplexity_pplx-decider-flash-v1.3:free', 'truthful_qa') |      65.6 |             74.3 |                43.1 |               65.6 |
-| ('perplexity_pplx-decider-v1.3:free', 'trivia_qa')         |      97.0 |             98.1 |                97.3 |               97.5 |
-| ('perplexity_pplx-decider-v1.3:free', 'truthful_qa')       |      81.6 |             85.5 |                71.9 |               79.2 |
+### Trivia Question Anwering
 
-### Accuracy Delta vs. Neutral Baseline by Model and Prompt Variation
-|                                                            |   Correct belief |   Correct rejection |   Incorrect belief |
-|:-----------------------------------------------------------|-----------------:|--------------------:|-------------------:|
-| ('cloudflare_clef', 'trivia_qa')                           |             +0.0 |                -2.7 |               +0.0 |
-| ('cloudflare_clef', 'truthful_qa')                         |             +4.3 |               -10.3 |               +0.5 |
-| ('cloudflare_clef-flash', 'trivia_qa')                     |             +0.6 |                -5.6 |               -0.7 |
-| ('cloudflare_clef-flash', 'truthful_qa')                   |             +7.6 |                -8.1 |               +1.7 |
-| ('jev-1.14', 'trivia_qa')                                  |             +0.9 |                -0.3 |               +0.0 |
-| ('jev-1.14', 'truthful_qa')                                |             +5.4 |                -7.1 |               -4.0 |
-| ('liquid_d1.2', 'trivia_qa')                               |             +0.7 |                +0.3 |               +0.0 |
-| ('liquid_d1.2', 'truthful_qa')                             |             +3.8 |                -2.2 |               -2.1 |
-| ('liquid_d1.2-ultra', 'trivia_qa')                         |             +0.6 |                -0.1 |               +0.0 |
-| ('liquid_d1.2-ultra', 'truthful_qa')                       |             +7.2 |                -4.9 |               -4.3 |
-| ('microsoft_microsoft-decision-1.1', 'trivia_qa')          |             -0.3 |                -0.1 |               -0.1 |
-| ('microsoft_microsoft-decision-1.1', 'truthful_qa')        |             -1.2 |                -2.1 |               +0.4 |
-| ('perplexity_pplx-decider-flash-v1.3:free', 'trivia_qa')   |             +1.4 |                -5.6 |               +0.4 |
-| ('perplexity_pplx-decider-flash-v1.3:free', 'truthful_qa') |             +8.7 |               -22.4 |               +0.0 |
-| ('perplexity_pplx-decider-v1.3:free', 'trivia_qa')         |             +1.2 |                +0.3 |               +0.6 |
-| ('perplexity_pplx-decider-v1.3:free', 'truthful_qa')       |             +3.9 |                -9.7 |               -2.5 |
+![Total Accuracy Across Input Variations](./results/plots/trivia_qa.png)
+
+### Truthful Question Anwering
+
+![Accuracy Delta vs. Neutral Baseline by Model and Prompt Variation](./results/plots/truthful_qa.png)
