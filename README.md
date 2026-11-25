@@ -34,3 +34,11 @@ Exact prompts, datasets, and evaluation criteria are documented alongside the im
 ### Truthful Question Anwering
 
 ![Accuracy Delta vs. Neutral Baseline by Model and Prompt Variation](./results/plots/truthful_qa.png)
+
+### Trivia Question Anwering (I am really sure - Ablation)
+
+![Total Accuracy Across Input Variations (Ablation)](./results/plots/trivia_qa_ablation.png)
+
+### Truthful Question Anwering (I am really sure - Ablation)
+
+![Accuracy Delta vs. Neutral Baseline by Model and Prompt Variation (Ablation)](./results/plots/truthful_qa_ablation.png)
