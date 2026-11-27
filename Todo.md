@@ -1,0 +1,11 @@
+# TODO
+
+- [ ] Create a method to split the dataset by dataset name.
+- [ ] Create a method to collect the results.
+- [ ] Create a method to create results tables (accuracy and delta).
+- [ ] Create a method to generate delta plots.
+- [ ] Define a uniform, reduced dataset format in questionnaire style, using answer letters.
+- [ ] Create a method to detect flips:
+  - Neutral prompt must be correct (ground truth).
+  - At least one changed prompt must be incorrect.
+- [ ] Integrate the Anthropic Eval Dataset.
