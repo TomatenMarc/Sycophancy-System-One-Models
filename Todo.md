@@ -1,5 +1,5 @@
 # TODO
-
+- [ ] Clean up repository and remove unused files.
 - [ ] Create a method to split the dataset by dataset name.
 - [ ] Create a method to collect the results.
 - [ ] Create a method to create results tables (accuracy and delta).
